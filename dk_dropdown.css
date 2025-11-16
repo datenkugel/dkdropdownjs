@@ -1,0 +1,247 @@
+/* Dropdown Kit Framework - Custom Dropdown Styles */
+/* Namespace: dk_ (dropdown kit) */
+
+/* Custom Dropdown */
+.dk_dropdown {
+    position: relative;
+    width: 100%;
+    font-family: inherit;
+    font-size: inherit;
+    color: inherit;
+    box-sizing: border-box;
+}
+
+.dk_dropdown *,
+.dk_dropdown *::before,
+.dk_dropdown *::after {
+    box-sizing: border-box;
+}
+
+.dk_selected {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75em 0.75em;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background-color: white;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-height: 3em;
+    font-size: inherit;
+    color: inherit;
+}
+
+.dk_selected:hover {
+    border-color: #007bff;
+}
+
+.dk_selected.dk_active {
+    border-color: #007bff;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
+.dk_selected_text {
+    flex: 1;
+    color: inherit;
+}
+
+.dk_selected_text.dk_placeholder {
+    color: #999;
+    opacity: 0.7;
+}
+
+.dk_arrow {
+    color: currentColor;
+    opacity: 0.6;
+    font-size: 0.8em;
+    transition: transform 0.2s ease;
+    user-select: none;
+}
+
+.dk_selected.dk_active .dk_arrow {
+    transform: rotate(180deg);
+}
+
+.dk_selected:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
+.dk_content {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 2px solid #007bff;
+    border-top: none;
+    border-radius: 0 0 6px 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    display: none;
+}
+
+.dk_content.dk_show {
+    display: block;
+}
+
+.dk_search_container {
+    padding: 12px;
+    border-bottom: 1px solid #eee;
+}
+
+.dk_search {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    outline: none;
+    font-family: inherit;
+}
+
+.dk_search:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.1);
+}
+
+.dk_options {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+/* Custom scrollbar */
+.dk_options::-webkit-scrollbar {
+    width: 8px;
+}
+
+.dk_options::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.dk_options::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 4px;
+}
+
+.dk_options::-webkit-scrollbar-thumb:hover {
+    background: #a1a1a1;
+}
+
+.dk_group_label {
+    padding: 0.75em 1em;
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #eee;
+    font-weight: 600;
+    font-size: 0.85em;
+    color: currentColor;
+    opacity: 0.7;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    user-select: none;
+}
+
+.dk_option {
+    padding: 0.75em 1.5em;
+    cursor: pointer;
+    border-bottom: 1px solid #f0f0f0;
+    transition: background-color 0.2s ease;
+    font-size: inherit;
+    color: inherit;
+}
+
+.dk_option:hover {
+    background-color: #f8f9fa;
+}
+
+.dk_option:last-child {
+    border-bottom: none;
+}
+
+.dk_option.dk_selected {
+    background-color: #007bff;
+    color: white;
+}
+
+.dk_option.dk_highlighted {
+    background-color: #e7f3ff;
+    color: #0056b3;
+    outline: 2px solid #007bff;
+}
+
+.dk_option.dk_disabled {
+    color: #ccc;
+    cursor: not-allowed;
+    background-color: #f9f9f9;
+    opacity: 0.6;
+    position: relative;
+}
+
+.dk_option.dk_disabled:hover {
+    background-color: #f9f9f9;
+}
+
+.dk_option.dk_hidden {
+    display: none;
+}
+
+/* No results message */
+.dk_no_results {
+    padding: 1.25em;
+    text-align: center;
+    color: currentColor;
+    opacity: 0.6;
+    font-style: italic;
+}
+
+/* Hidden input (should remain invisible) */
+.dk_dropdown input[type="hidden"] {
+    display: none;
+}
+
+/* Loading and Error States */
+.dk_selected.dk_loading {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.dk_selected.dk_loading .dk_selected_text {
+    color: currentColor;
+    opacity: 0.6;
+}
+
+.dk_selected.dk_error {
+    border-color: #dc3545;
+    background-color: #fff5f5;
+}
+
+.dk_selected.dk_error .dk_selected_text {
+    color: #dc3545;
+}
+
+/* Spinner Animation */
+.dk_spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid #007bff;
+    border-radius: 50%;
+    animation: dk_spin 1s linear infinite;
+    display: inline-block;
+}
+
+@keyframes dk_spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .dk_options {
+        max-height: 250px;
+    }
+}
