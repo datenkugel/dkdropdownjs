@@ -75,13 +75,15 @@
     position: absolute;
     top: 100%;
     left: 0;
-    right: 0;
+    /* right is intentionally omitted here; width is controlled via JS when
+       position:fixed is applied so the panel can escape Bootstrap col/row
+       overflow constraints. */
     background: white;
     border: 2px solid #007bff;
     border-top: none;
     border-radius: 0 0 6px 6px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    z-index: 1000;
+    z-index: 1050; /* above Bootstrap modals baseline (1040) */
     display: none;
 }
 

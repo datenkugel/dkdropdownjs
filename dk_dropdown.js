@@ -1,4 +1,7 @@
 class CustomDropdown {
+    // Registry of all active instances – used to close others when one opens
+    static _instances = [];
+
     // Static method for quick dropdown creation
     static create(elementId, data, options = {}) {
         return new CustomDropdown(elementId, data, options);
@@ -64,6 +67,9 @@ class CustomDropdown {
         this.isDisabled = false;
         
         this.init();
+
+        // Register this instance so other dropdowns can close it
+        CustomDropdown._instances.push(this);
     }
     
     init() {
@@ -613,10 +619,23 @@ class CustomDropdown {
     
     open() {
         if (this.isOpen || this.isLoading || this.isDisabled) return;
+
+        // Close every other open dropdown before opening this one
+        CustomDropdown._instances.forEach(instance => {
+            if (instance !== this && instance.isOpen) {
+                instance.close();
+            }
+        });
         
         this.isOpen = true;
         this.selectedElement.classList.add('dk_active');
         this.contentElement.classList.add('dk_show');
+
+        // Use fixed positioning so the panel escapes Bootstrap col/row overflow constraints
+        this._repositionContent();
+        this._boundRepositionContent = () => this._repositionContent();
+        window.addEventListener('scroll', this._boundRepositionContent, true);
+        window.addEventListener('resize', this._boundRepositionContent);
         
         // Reset search
         this.searchTerm = '';
@@ -663,6 +682,22 @@ class CustomDropdown {
         this.isOpen = false;
         this.selectedElement.classList.remove('dk_active');
         this.contentElement.classList.remove('dk_show');
+
+        // Remove fixed positioning applied during open()
+        const cs = this.contentElement.style;
+        cs.position = '';
+        cs.width    = '';
+        cs.left     = '';
+        cs.right    = '';
+        cs.top      = '';
+        cs.bottom   = '';
+        cs.zIndex   = '';
+
+        if (this._boundRepositionContent) {
+            window.removeEventListener('scroll', this._boundRepositionContent, true);
+            window.removeEventListener('resize', this._boundRepositionContent);
+            this._boundRepositionContent = null;
+        }
         
         // Clear search
         this.searchTerm = '';
@@ -677,6 +712,31 @@ class CustomDropdown {
         });
     }
     
+    _repositionContent() {
+        const rect    = this.selectedElement.getBoundingClientRect();
+        const content = this.contentElement;
+        const vpH     = window.innerHeight;
+        const spaceBelow = vpH - rect.bottom;
+        const spaceAbove = rect.top;
+        const contentH   = content.offsetHeight;
+
+        content.style.position = 'fixed';
+        content.style.width    = rect.width + 'px';
+        content.style.left     = rect.left  + 'px';
+        content.style.right    = 'auto';
+        content.style.zIndex   = '9999';
+
+        if (spaceBelow >= contentH || spaceBelow >= spaceAbove) {
+            // Open downward
+            content.style.top    = rect.bottom + 'px';
+            content.style.bottom = 'auto';
+        } else {
+            // Not enough room below – open upward
+            content.style.top    = 'auto';
+            content.style.bottom = (vpH - rect.top) + 'px';
+        }
+    }
+
     toggle() {
         // Prevent interaction while loading or disabled
         if (this.isLoading || this.isDisabled) {
@@ -760,7 +820,16 @@ class CustomDropdown {
     }
     
     destroy() {
+        // Unregister from the global instance registry
+        const idx = CustomDropdown._instances.indexOf(this);
+        if (idx !== -1) CustomDropdown._instances.splice(idx, 1);
+
         // Remove event listeners and clean up
+        if (this._boundRepositionContent) {
+            window.removeEventListener('scroll', this._boundRepositionContent, true);
+            window.removeEventListener('resize', this._boundRepositionContent);
+            this._boundRepositionContent = null;
+        }
         if (this.isSelectElement) {
             // Show the original select element
             this.originalElement.style.display = '';
